@@ -1,0 +1,6 @@
+{
+    "end_date_after_begin": "A data de término deve ser após a data de início.",
+    "begin_date_not_past": "A data de início não pode ser no passado.",
+    "location_empty": "A localização não pode estar vazia.",
+    "location_exceed": "A localização não pode exceder 200 caracteres."
+}

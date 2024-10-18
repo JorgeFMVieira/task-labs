@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 50 50">
+  <!-- Generator: Adobe Illustrator 29.0.0, SVG Export Plug-In . SVG Version: 2.1.0 Build 186)  -->
+  <defs>
+    <style>
+      .st0 {
+        fill: #78c6a3;
+      }
+
+      .st1 {
+        fill: #ef3d25;
+      }
+    </style>
+  </defs>
+  <path class="st0" d="M3.1,43.9c2.5-1.1,5-2.3,7.5-3.4,4.8-11.5,9.5-23,14.3-34.5"/>
+  <path class="st0" d="M47,43.9c-2.5-1.1-5-2.3-7.5-3.4-4.8-11.5-9.5-23-14.3-34.5"/>
+  <path class="st0" d="M3.1,43.9h43.7c-7.3-1.5-14.6-3.1-22-4.6"/>
+  <polyline class="st1" points="0 0 0 0 0 0"/>
+</svg>
