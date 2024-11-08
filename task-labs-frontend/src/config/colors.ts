@@ -5,7 +5,9 @@ const colors = {
     background: '#F9F9F9', // Soft Off-White
     neutral: '#757575', // Light Gray
     input: '#EDEDED',
-    mainOpacity: 'rgba(120, 198, 163, 0.3)'
+    mainOpacity: 'rgba(120, 198, 163, 0.3)',
+    error: '#dc3545',
+    success: '#28a745'
   } as const; // This ensures that the values can't be accidentally changed.
   
   export type Colors = typeof colors;

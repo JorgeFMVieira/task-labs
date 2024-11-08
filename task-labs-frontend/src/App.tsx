@@ -8,8 +8,8 @@ import i18n from './i18n';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Auth from './pages/Authentication/Auth';
-import { OnBoardingModel } from './components/Models/OnBoarding';
-import { AuthModel } from './components/Models/Auth';
+import { OnBoardingModel } from './components/Models/Navigation/OnBoarding';
+import { AuthModel } from './components/Models/Navigation/Auth';
 
 export type RootStackParamList = {
     'On Boarding': OnBoardingModel;
@@ -36,25 +36,25 @@ export default function App() {
     //     setData(data);
     // }
 
-  return (
-    <NavigationContainer>
-        <I18nextProvider i18n={i18n}>
-            <SafeAreaView style={styles.container}>
-                <StatusBar
-                    barStyle="dark-content" // or 'light-content' based on your design
-                    backgroundColor="transparent" // You can set a background color here
-                    translucent={false}  // Makes the StatusBar transparent
-                />
-                <ScrollView contentContainerStyle={styles.scrollContainer}>
-                    <Stack.Navigator>
-                        <Stack.Screen name='On Boarding' component={OnBoarding} options={{ headerShown: false }} />
-                        <Stack.Screen name='Auth' component={RenderAuth} options={{ headerShown: false }} />
-                    </Stack.Navigator>
-                </ScrollView>
-            </SafeAreaView>
-        </I18nextProvider>
-    </NavigationContainer>
-  );
+    return (
+        <NavigationContainer>
+            <I18nextProvider i18n={i18n}>
+                <SafeAreaView style={styles.container}>
+                    <StatusBar
+                        barStyle="dark-content" // or 'light-content' based on your design
+                        backgroundColor="transparent" // You can set a background color here
+                        translucent={false}  // Makes the StatusBar transparent
+                    />
+                    <ScrollView contentContainerStyle={styles.scrollContainer}>
+                        <Stack.Navigator>
+                            <Stack.Screen name='On Boarding' component={OnBoarding} options={{ headerShown: false }} />
+                            <Stack.Screen name='Auth' component={RenderAuth} options={{ headerShown: false }} />
+                        </Stack.Navigator>
+                    </ScrollView>
+                </SafeAreaView>
+            </I18nextProvider>
+        </NavigationContainer>
+    );
 }
 
 const styles = StyleSheet.create({

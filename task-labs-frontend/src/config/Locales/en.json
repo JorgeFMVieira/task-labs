@@ -41,5 +41,14 @@
     "forgot_password_submit": "Submit",
     "forgot_password_login1": "Remembered your credentials? ",
     "forgot_password_login2": "Log In ",
-    "forgot_password_login3": "here"
+    "forgot_password_login3": "here",
+    "name_empty": "Name cannot be empty.",
+    "email_empty": "Email cannot be empty.",
+    "password_empty": "Password cannot be empty.",
+    "name_maxlength": "Name cannot exceed 65 characters.",
+    "email_maxlength": "Email cannot exceed 255 characters.",
+    "password_maxlength": "Password cannot exceed 255 characters.",
+    "email_invalid": "Email format is invalid.",
+    "contact_admin": "An error occurred. Please try again later and contact an admin.",
+    "email_exists": "That email adress is already in use."
 }

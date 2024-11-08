@@ -1,5 +1,5 @@
 import { SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { fonts } from '../../config/fonts/fonts';
 import colors from '../../config/colors';
@@ -12,6 +12,9 @@ import Circle from '../../components/Circle/Circle';
 import Input from '../../components/Input/Input';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../../App';
+import Error from '../../components/Notifications/Error';
+import { UserModel } from '../../components/Models/API/User';
+import ErrorSVG from '../../config/SVG/Error/ErrorSVG';
 
 export default function SignUp() {
 
@@ -19,18 +22,49 @@ export default function SignUp() {
 
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
     const [password2, setPassword2] = useState("");
+    const [responseMessage, setResponseMessage] = useState("");
+    const [fieldErrors, setFieldErrors] = useState<string[]>([]);
+    const [user, setUser] = useState<UserModel>({ name: '', email: '', password: '' }); // Initial state
 
-    const createAccount = () => {
-        console.log("register")
+    const createAccount = async () => {
+
+        try {
+            const response = await fetch('http://192.168.1.167:8000/api/createuser/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(user),
+            });
+      
+            if (response.ok) {
+                const result = await response.json();
+                if(user.password !== password2){
+                    setFieldErrors(["Passwords must match"]);
+                }
+                setFieldErrors([]);
+            } else {
+                const errorData = await response.json();
+                setFieldErrors(errorData); // Set errors for each field
+            }
+        } catch (error) {
+            setFieldErrors([t('contct_admin')])
+        }
     };
 
     const navigateLogin = () => {
         navigation.navigate('Auth', {auth: "Sign In"});
     }
+
+    const handleInputChange = (field: keyof UserModel, value: React.SetStateAction<string>) => {
+        setUser({ ...user, [field]: value });
+        console.log(user);
+    };
+
+    useEffect(() => {
+        setFieldErrors([]);
+    }, [user])
 
     return (
         <SafeAreaView>
@@ -43,10 +77,18 @@ export default function SignUp() {
                 </Text>
             </Text>
             <View style={styles.inputs_wrapper}>
-                <Input placeholder={t('sign_up_name')} keyboardType={'default'} value={name} setValue={setName} icon={<Name />} secureTextEntry={false} hasWarning={''} warningNavigate='' />
-                <Input placeholder={t('sign_up_email')} keyboardType={'email-address'} value={email} setValue={setEmail} icon={<Email />} secureTextEntry={false} hasWarning={''} warningNavigate='' />
-                <Input placeholder={t('sign_up_password1')} keyboardType={'default'} value={password} setValue={setPassword} icon={<Password />} secureTextEntry={true} hasWarning={''} warningNavigate='' />
+                <Input placeholder={t('sign_up_name')} keyboardType={'default'} value={user.name} setValue={(value) => handleInputChange('name', value)} icon={<Name />} secureTextEntry={false} hasWarning={''} warningNavigate='' />
+                <Input placeholder={t('sign_up_email')} keyboardType={'email-address'} value={user.email} setValue={(value) => handleInputChange('email', value)} icon={<Email />} secureTextEntry={false} hasWarning={''} warningNavigate='' />
+                <Input placeholder={t('sign_up_password1')} keyboardType={'default'} value={user.password} setValue={(value) => handleInputChange('password', value)} icon={<Password />} secureTextEntry={true} hasWarning={''} warningNavigate='' />
                 <Input placeholder={t('sign_up_password2')} keyboardType={'default'} value={password2} setValue={setPassword2} icon={<Password />} secureTextEntry={true} hasWarning={''} warningNavigate='' />
+            </View>
+            <View style={styles.error_input}>
+                {fieldErrors.length > 0 && fieldErrors.map((error, index) => (
+                    <View key={index} style={styles.error_style}>
+                        <ErrorSVG />
+                        <Text style={styles.error_input_text}>{t(error)}</Text>
+                    </View>
+                ))}
             </View>
             <TouchableOpacity 
                 style={styles.create_btn} 
@@ -170,5 +212,21 @@ const styles = StyleSheet.create({
         margin: 0,
         padding: 0,
         textAlign: 'center'
+    },
+    error_input: {
+        marginBottom: 15,
+        marginLeft: 5
+    },
+    error_input_text: {
+        fontSize: 14,
+        fontFamily: fonts.bodyText.fontFamily,
+        fontWeight: fonts.bodyText.fontWeight,
+        color: colors.error,
+        marginLeft: 5,
+    },
+    error_style: {
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center'
     }
 })
