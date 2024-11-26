@@ -1,14 +1,14 @@
 from django.urls import path, include
-from .views import CreateUserViewSet, WorkHoursViewSet
+from api import views
 from rest_framework import routers
-
-from . import views
+from rest_framework_simplejwt.views import TokenRefreshView
 
 router = routers.DefaultRouter()
 
-router.register(r'workhours', WorkHoursViewSet)
-router.register(r'createuser', CreateUserViewSet)
-
 urlpatterns = [
+    path('token/', views.MyTokenObainPairView.as_view()),
+    path('token/refresh/', TokenRefreshView.as_view()),
+    path('register/', views.RegisterUserView.as_view()),
+    path('dashboard/', views.dashboard),
     path('', include(router.urls)),
 ]

@@ -12,49 +12,63 @@ export type ProgressBarProps = {
     currentPage: number;
     setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
     maxPages: number;
+    setIsOnBoardingCompleted: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function ProgressBar(props: ProgressBarProps) {
+    const navigation = useNavigation<NavigationProp<RootStackParamList>>(); // Type your navigation prop
 
     const { t } = useTranslation();
-    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
     const onPagePressNext = () => {
-        if(props.currentPage <= (props.maxPages -1) && props.currentPage >= 1){
-            props.setCurrentPage(props.currentPage + 1)
+        if (props.currentPage <= props.maxPages - 1 && props.currentPage >= 1) {
+            props.setCurrentPage(props.currentPage + 1);
         }
-        if(props.currentPage === props.maxPages){
-            navigation.navigate('Auth', { auth: 'Sign Up' });
+
+        if (props.currentPage === props.maxPages) {
+            // Correct way to navigate and pass params
+            props.setIsOnBoardingCompleted(true);
         }
-    }
+    };
 
     return (
         <SafeAreaView style={styles.content}>
             <View style={styles.bar}>
-                <Bar isActive={props.currentPage === 1 ? true : false} page={1} setCurrentPage={props.setCurrentPage} currentPage={props.currentPage} />
-                <Bar isActive={props.currentPage === 2 ? true : false} page={2} setCurrentPage={props.setCurrentPage} currentPage={props.currentPage} />
-                <Bar isActive={props.currentPage === 3 ? true : false} page={3} setCurrentPage={props.setCurrentPage} currentPage={props.currentPage} />
+                <Bar
+                    isActive={props.currentPage === 1}
+                    page={1}
+                    setCurrentPage={props.setCurrentPage}
+                    currentPage={props.currentPage}
+                />
+                <Bar
+                    isActive={props.currentPage === 2}
+                    page={2}
+                    setCurrentPage={props.setCurrentPage}
+                    currentPage={props.currentPage}
+                />
+                <Bar
+                    isActive={props.currentPage === 3}
+                    page={3}
+                    setCurrentPage={props.setCurrentPage}
+                    currentPage={props.currentPage}
+                />
             </View>
             <View>
-                <BarText currentPage={props.currentPage} />           
+                <BarText currentPage={props.currentPage} />
             </View>
-            <TouchableOpacity 
-                    style={styles.button}
-                    onPress={onPagePressNext}
-            >
-                <View>{props.currentPage === props.maxPages ? (
-                    <Text style={styles.text_button}>
-                        {t('progress_bar_done')}
-                    </Text>
+            <TouchableOpacity style={styles.button} onPress={onPagePressNext}>
+                <View>
+                    {props.currentPage === props.maxPages ? (
+                        <Text style={styles.text_button}>{t('progress_bar_done')}</Text>
                     ) : (
-                        <Text style={styles.text_button}>
-                            {t('progress_bar_next')}
-                        </Text>
-                )}</View>
+                        <Text style={styles.text_button}>{t('progress_bar_next')}</Text>
+                    )}
+                </View>
             </TouchableOpacity>
         </SafeAreaView>
-    )
+    );
 }
+
 
 const styles = StyleSheet.create({
     content: {

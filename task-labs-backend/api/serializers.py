@@ -1,51 +1,58 @@
-from rest_framework import serializers
-from .models import User, WorkHour
+from rest_framework import serializers, status
+from .models import User, Profile, WorkHour
 from django.contrib.auth.hashers import make_password
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from django.core.exceptions import ValidationError as DjangoValidationError
-
-class WorkHoursSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = WorkHour
-        fields = ('id', 'location', 'begin_date', 'end_date')
+from django.contrib.auth.password_validation import validate_password
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework.response import Response
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'name', 'email', 'password')
+        fields = ['id', 'username', 'email']
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        token['full_name'] = user.profile.full_name
+        token['username'] = user.username
+        token['email'] = user.email
+        token['bio'] = user.profile.bio
+        token['image'] = str(user.profile.image)
+        token['verified'] = user.profile.verified
+
+        return token
     
+class RegisterUserSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
+    password2 = serializers.CharField(write_only=True, required=True)
+
+    class Meta:
+        model = User
+        fields = ['email', 'username', 'password', 'password2']
+
     def validate(self, attrs):
-        errors = {}
-
-        email = attrs.get('email')
-        if User.objects.filter(email=email).exists():
-            errors = ["email_exists"]
-        if email:
-            try:
-                validate_email(email)
-            except DjangoValidationError:
-                errors = ["email_invalid"]
-        if not attrs.get('password'):
-            errors = ["password_empty"]
-        if not attrs.get('email'):
-            errors = ["email_empty"]
-        if not attrs.get('name'):
-            errors = ["name_empty"]
-        if len(attrs.get('password', '')) > 255:
-            errors = ["password_maxlength"]
-        if len(attrs.get('email', '')) > 255:
-            errors = ["email_maxlength"]
-        if len(attrs.get('name', '')) > 65:
-            errors = ["name_maxlength"]
-
-        # If there are any errors, raise a ValidationError
-        if errors:
-            raise serializers.ValidationError(errors)
-
+        if attrs['password'] != attrs['password2']:
+            raise serializers.ValidationError(
+                {"password": "Password fields does not match."}
+            )
         return attrs
-
+        
     def create(self, validated_data):
-        # Hash the password before creating the user
-        validated_data['password'] = make_password(validated_data['password'])
-        return User.objects.create(**validated_data)
+        user = User.objects.create(
+            username = validated_data['username'],
+            email = validated_data['email'],
+        )
+        user.set_password(validated_data['password'])
+        user.save()
+
+        return user
+    
+class WorkHoursSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WorkHour
+        fields = ('id', 'location', 'begin_date', 'end_date')

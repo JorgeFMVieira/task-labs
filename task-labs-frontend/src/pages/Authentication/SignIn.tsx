@@ -12,11 +12,15 @@ import Input from '../../components/Input/Input';
 import Circle from '../../components/Circle/Circle';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../App';
+import { useAuth } from '../../context/AuthContext';
 
 export default function SignIn() {
 
     const { t } = useTranslation();
 
+    const { onLogin } = useAuth();
+
+    const [errors, setErrors] = useState({});  // Use an empty object to hold dynamic errors
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -25,13 +29,12 @@ export default function SignIn() {
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
 
-    const loginIntoAccount = () => {
-        console.log("register")
+    const loginIntoAccount = async () => {
+        const result = await onLogin!(email, password);
+        if(result && result.error){
+            alert(result.msg);
+        }
     };
-
-    const navigateRegister = () => {
-        navigation.navigate('Auth', {auth: "Sign Up"});
-    }
 
     return (
         <SafeAreaView>
@@ -44,8 +47,8 @@ export default function SignIn() {
                 </Text>
             </Text>
             <View style={styles.inputs_wrapper}>
-                <Input placeholder={t('sign_in_email')} keyboardType={'email-address'} value={email} setValue={setEmail} icon={<Email />} secureTextEntry={false} hasWarning={''} warningNavigate='' />
-                <Input placeholder={t('sign_in_password1')} keyboardType={'default'} value={password} setValue={setPassword} icon={<Password />} secureTextEntry={true} hasWarning={'Forgot your password?'} warningNavigate={'Forgot Password'} />
+                <Input field='email' errors={errors} setErrors={setErrors} placeholder={t('sign_in_email')} keyboardType={'email-address'} value={email} setValue={setEmail} icon={<Email />} secureTextEntry={false} hasWarning={''} warningNavigate='' />
+                <Input field='password' errors={errors} setErrors={setErrors} placeholder={t('sign_in_password1')} keyboardType={'default'} value={password} setValue={setPassword} icon={<Password />} secureTextEntry={true} hasWarning={'Forgot your password?'} warningNavigate={'Forgot Password'} />
             </View>
             <TouchableOpacity 
                 style={styles.create_btn} 
@@ -67,7 +70,7 @@ export default function SignIn() {
             </View>
             <View style={styles.sign_in}>
                 <TouchableOpacity style={styles.change_page_sign}
-                    onPress={navigateRegister}
+                    onPress={() => navigation.navigate('Sign Up', {auth: "Sign Up"})}
                 >
                     <Text style={styles.sign_in_text}>
                         {t('sign_in_login1')}

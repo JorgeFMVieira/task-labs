@@ -15,6 +15,9 @@ export type InputProps = {
     secureTextEntry: boolean;
     hasWarning: string;
     warningNavigate: string;
+    errors: { [key: string]: string };  // This means each key (field) in the errors object is a string, and its value is a string (the error message)
+    setErrors: React.Dispatch<React.SetStateAction<{}>>;
+    field: string;
 }
 
 export default function Input(props: InputProps) {
@@ -23,8 +26,18 @@ export default function Input(props: InputProps) {
 
     const navigateWarning = () => {
         if(props.warningNavigate === 'Forgot Password'){
-            navigation.navigate('Auth', { auth: 'Forgot Password'});
+            navigation.navigate('Forgot Password', { auth: 'Forgot Password'});
         }
+    }
+
+    const onChangeInput = (value: string) => {
+        props.setValue(value);
+
+        props.setErrors(() => {
+            const newErrors = { ...props.errors }; // Copy the previous errors state
+            newErrors[props.field] = ''; // Clear the error for the specific field
+            return newErrors; // Return the updated errors object
+        });
     }
 
     return (
@@ -33,7 +46,7 @@ export default function Input(props: InputProps) {
                 {props.icon}
                 <TextInput
                     style={styles.input}
-                    onChangeText={props.setValue}
+                    onChangeText={(value) => onChangeInput(value)}
                     value={props.value}
                     placeholder={props.placeholder}
                     placeholderTextColor={colors.neutral}
@@ -58,7 +71,6 @@ const styles = StyleSheet.create({
     wrapper: {
         display: 'flex',
         flexDirection: 'column',
-        marginBottom: 25
     },
     input_container: {
         width: '100%',

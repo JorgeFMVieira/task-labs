@@ -1,0 +1,7 @@
+frontend:
+
+- Adicionar transições a varios itens
+
+- Melhor design dos erros
+
+- Melhor design de escolher linguagem e isso

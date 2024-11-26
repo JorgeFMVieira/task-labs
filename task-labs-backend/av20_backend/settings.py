@@ -32,6 +32,7 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1', '192.168.1.167']  # Replace with your
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -116,17 +117,17 @@ WSGI_APPLICATION = 'av20_backend.wsgi.application'
 
 # Set CORS settings
 # Allow all origins (for development purposes, change in production)
-CORS_ALLOW_ALL_ORIGINS = True
+# CORS_ALLOW_ALL_ORIGINS = True
 
 
 # Alternatively, specify allowed origins (more secure)
-# CORS_ALLOWED_ORIGINS = [
-#     "http://localhost:8081",
-#     "http://127.0.0.1:8000",
-#     "http://192.168.1.167:8081",
-#     "exp://192.168.1.167:8081",
-#     "https://10.0.2.2:8000"
-# ]
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8081",
+    "http://127.0.0.1:8000",
+    "http://192.168.1.167:8081",
+    "exp://192.168.1.167:8081",
+    "https://10.0.2.2:8000"
+]
 
 
 # Database

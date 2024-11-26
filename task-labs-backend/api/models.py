@@ -9,22 +9,36 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.db.models.signals import post_save
 
-class User(models.Model):
-    email = models.EmailField(max_length=255, blank=False, null=False, unique=True)
-    name = models.CharField(max_length=100, null=False, blank=False)
-    password = models.CharField(max_length=255, null=False, blank=False)
+class User(AbstractUser):
+    username = models.CharField(max_length=100)
+    email = models.EmailField(unique=True)
 
-    def clean(self):
-        # Custom validation logic, if needed
-        super().clean()
-
-    def save(self, *args, **kwargs):
-        # Call full_clean() to trigger validation before saving
-        self.full_clean()  # This will trigger validation and apply your error messages
-        super().save(*args, **kwargs)
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['username']
 
     def __str__(self):
-        return self.name
+        return self.username
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    full_name = models.CharField(max_length=300)
+    bio = models.CharField(max_length=300)
+    image = models.ImageField(default="default.jpg", upload_to="user_images")
+    verified = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.full_name or f"Profile of {self.user.username}"
+    
+
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+
+def save_user_profile(sender, instance, **kwargs):
+    instance.profile.save()
+
+post_save.connect(create_user_profile, sender=User)
+post_save.connect(save_user_profile, sender=User)
 
 class Company(models.Model):
     company = models.CharField(max_length=40, unique=True, null=False, blank=False)
@@ -52,7 +66,7 @@ class CompanyGrade(models.Model):
 
 
 class UserCompany(models.Model):
-    email = models.ForeignKey(User, on_delete=models.CASCADE, null=False)
+    email = models.EmailField(max_length=30, null=False, blank=False)
     company = models.ForeignKey(Company, on_delete=models.CASCADE, null=False)
     grade = models.ForeignKey(CompanyGrade, on_delete=models.CASCADE, null=False)
 

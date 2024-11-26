@@ -5,7 +5,11 @@ import Logo from '../../components/Logo/Logo';
 import SVGImage from './SVGImage';
 import Language from '../../components/Language/Language';
 
-export default function OnBoarding() {
+interface OnBoardingProps {
+    setIsOnBoardingCompleted: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export default function OnBoarding(props: OnBoardingProps) {
 
     const [currentPage, setCurrentPage] = useState(1);
     const maxPages = 3;
@@ -15,7 +19,7 @@ export default function OnBoarding() {
             <ScrollView style={styles.scrollContainer}>
                 <Logo />
                 <View style={{ marginBottom: 25}}>
-                    <SVGImage currentPage={currentPage} setCurrentPage={setCurrentPage} maxPages={maxPages} />
+                    <SVGImage currentPage={currentPage} setCurrentPage={setCurrentPage} maxPages={maxPages} setIsOnBoardingCompleted={props.setIsOnBoardingCompleted} />
                 </View>
                 <Language />
             </ScrollView>

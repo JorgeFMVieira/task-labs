@@ -9,6 +9,7 @@ export type SVGImageProps = {
     currentPage: number;
     setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
     maxPages: number;
+    setIsOnBoardingCompleted: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export default function SVGImage(props: SVGImageProps) {
@@ -23,7 +24,7 @@ export default function SVGImage(props: SVGImageProps) {
                 ) : null}
             </View>
             <View style={styles.progress_bar}>
-                <ProgressBar currentPage={props.currentPage} setCurrentPage={props.setCurrentPage} maxPages={props.maxPages} />
+                <ProgressBar currentPage={props.currentPage} setCurrentPage={props.setCurrentPage} maxPages={props.maxPages} setIsOnBoardingCompleted={props.setIsOnBoardingCompleted} />
             </View>
         </SafeAreaView>
     );

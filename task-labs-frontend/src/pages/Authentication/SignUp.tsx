@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { fonts } from '../../config/fonts/fonts';
@@ -15,115 +15,149 @@ import { RootStackParamList } from '../../App';
 import Error from '../../components/Notifications/Error';
 import { UserModel } from '../../components/Models/API/User';
 import ErrorSVG from '../../config/SVG/Error/ErrorSVG';
+import { useAuth } from '../../context/AuthContext';
+import ErrorInput from '../../components/Input/ErrorInput';
+import Language from '../../components/Language/Language';
+import Logo from '../../components/Logo/Logo';
 
-export default function SignUp() {
+type ResultMsgError = {
+    error: boolean;
+    msg: {
+        key: string;
+        value: string;
+    }
+}
+
+export type SignUpProps = {
+    auth: "Sign Up";
+}
+
+interface Errors {
+    [key: string]: string;  // Allows any string key, with string values
+}
+
+export default function SignUp(props: SignUpProps) {
 
     const { t } = useTranslation();
 
+    const { onRegister } = useAuth();
+
+    const [responseMessage, setResponseMessage] = useState("");
+    const [errors, setErrors] = useState({});  // Use an empty object to hold dynamic errors
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [password2, setPassword2] = useState("");
+
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-    const [password2, setPassword2] = useState("");
-    const [responseMessage, setResponseMessage] = useState("");
-    const [fieldErrors, setFieldErrors] = useState<string[]>([]);
-    const [user, setUser] = useState<UserModel>({ name: '', email: '', password: '' }); // Initial state
-
     const createAccount = async () => {
-
-        try {
-            const response = await fetch('http://192.168.1.167:8000/api/createuser/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(user),
-            });
-      
-            if (response.ok) {
-                const result = await response.json();
-                if(user.password !== password2){
-                    setFieldErrors(["Passwords must match"]);
-                }
-                setFieldErrors([]);
-            } else {
-                const errorData = await response.json();
-                setFieldErrors(errorData); // Set errors for each field
+        const result: ResultMsgError = await onRegister!(email, name, password, password2);
+        if (result) {
+            console.log(result)
+            if(result.error){
+                setErrors((prevErrors) => {
+                    const newErrors: Errors = { ...prevErrors };  // Make a copy of the previous errors
+                    Object.entries(result.msg).forEach(([key, value]) => {
+                        newErrors[key] = value;  // Update or add the error message for each field
+                    });
+                    return newErrors;  // Return the updated errors object
+                });
+            }else{
+                setErrors("");
             }
-        } catch (error) {
-            setFieldErrors([t('contct_admin')])
         }
     };
 
-    const navigateLogin = () => {
-        navigation.navigate('Auth', {auth: "Sign In"});
-    }
-
-    const handleInputChange = (field: keyof UserModel, value: React.SetStateAction<string>) => {
-        setUser({ ...user, [field]: value });
-        console.log(user);
-    };
-
-    useEffect(() => {
-        setFieldErrors([]);
-    }, [user])
-
     return (
-        <SafeAreaView>
-            <Text style={styles.text}>
-                <Text>
-                    {t('sign_up_title1')}
-                </Text>
-                <Text style={styles.textImportant}>
-                    {t('sign_up_title2')}
-                </Text>
-            </Text>
-            <View style={styles.inputs_wrapper}>
-                <Input placeholder={t('sign_up_name')} keyboardType={'default'} value={user.name} setValue={(value) => handleInputChange('name', value)} icon={<Name />} secureTextEntry={false} hasWarning={''} warningNavigate='' />
-                <Input placeholder={t('sign_up_email')} keyboardType={'email-address'} value={user.email} setValue={(value) => handleInputChange('email', value)} icon={<Email />} secureTextEntry={false} hasWarning={''} warningNavigate='' />
-                <Input placeholder={t('sign_up_password1')} keyboardType={'default'} value={user.password} setValue={(value) => handleInputChange('password', value)} icon={<Password />} secureTextEntry={true} hasWarning={''} warningNavigate='' />
-                <Input placeholder={t('sign_up_password2')} keyboardType={'default'} value={password2} setValue={setPassword2} icon={<Password />} secureTextEntry={true} hasWarning={''} warningNavigate='' />
-            </View>
-            <View style={styles.error_input}>
-                {fieldErrors.length > 0 && fieldErrors.map((error, index) => (
-                    <View key={index} style={styles.error_style}>
-                        <ErrorSVG />
-                        <Text style={styles.error_input_text}>{t(error)}</Text>
-                    </View>
-                ))}
-            </View>
-            <TouchableOpacity 
-                style={styles.create_btn} 
-                onPress={() => createAccount()}
-            >
-                <Text style={styles.create_btn_text}>{t('sign_up_create_account')}</Text>
-            </TouchableOpacity>
-            <View style={styles.or_register_wrapper}>
-                <Text style={styles.sign_up_register_or}>{t('sign_up_register_or')}</Text>
-            </View>
-            <View style={styles.circle_wrapper}>
-                <Circle icon={<Google />} />
-                <Circle icon={<Facebook />} />
-            </View>
-            <View style={styles.other_wrapper}>
-                <View style={styles.line_other}></View>
-                <Text style={styles.text_other}>OR</Text>
-                <View style={styles.line_other}></View>
-            </View>
-            <View style={styles.sign_in}>
-                <TouchableOpacity style={styles.change_page_sign}
-                    onPress={navigateLogin}
-                >
-                    <Text style={styles.sign_in_text}>
-                        {t('sign_up_login1')}
-                        <Text style={styles.sign_in_text_important}>{t('sign_up_login2')}</Text>
-                        {t('sign_up_login3')}
-                    </Text>
-                </TouchableOpacity>
-            </View>
+        <SafeAreaView style={styles.container}>
+            <ScrollView style={styles.scrollContainer}>
+                <Logo />
+                <View style={styles.sign_up}>
+                    <SafeAreaView>
+                        <Text style={styles.text}>
+                            <Text>
+                                {t('sign_up_title1')}
+                            </Text>
+                            <Text style={styles.textImportant}>
+                                {t('sign_up_title2')}
+                            </Text>
+                        </Text>
+                        <View style={styles.inputs_wrapper}>
+                            <View style={styles.input_box}>
+                                <Input field='username' setErrors={setErrors} errors={errors} placeholder={t('sign_up_name')} keyboardType={'default'} value={name} setValue={setName} icon={<Name />} secureTextEntry={false} hasWarning={''} warningNavigate='' />
+                                <ErrorInput field='username' errors={errors} />
+                            </View>
+                            <View style={styles.input_box}>
+                                <Input field='email' setErrors={setErrors} errors={errors} placeholder={t('sign_up_email')} keyboardType={'email-address'} value={email} setValue={setEmail} icon={<Email />} secureTextEntry={false} hasWarning={''} warningNavigate='' />
+                                <ErrorInput field='email' errors={errors}/>
+                            </View>
+                            <View style={styles.input_box}>
+                                <Input field='password' setErrors={setErrors} errors={errors} placeholder={t('sign_up_password1')} keyboardType={'default'} value={password} setValue={setPassword} icon={<Password />} secureTextEntry={true} hasWarning={''} warningNavigate='' />
+                                <ErrorInput field='password' errors={errors} />
+                            </View>
+                            <View style={styles.input_box}>
+                                <Input field='password2' setErrors={setErrors} errors={errors} placeholder={t('sign_up_password2')} keyboardType={'default'} value={password2} setValue={setPassword2} icon={<Password />} secureTextEntry={true} hasWarning={''} warningNavigate='' />
+                                <ErrorInput field='password2' errors={errors} />
+                            </View>
+                        </View>
+                        <TouchableOpacity 
+                            style={styles.create_btn} 
+                            onPress={() => createAccount()}
+                        >
+                            <Text style={styles.create_btn_text}>{t('sign_up_create_account')}</Text>
+                        </TouchableOpacity>
+                        <View style={styles.or_register_wrapper}>
+                            <Text style={styles.sign_up_register_or}>{t('sign_up_register_or')}</Text>
+                        </View>
+                        <View style={styles.circle_wrapper}>
+                            <Circle icon={<Google />} />
+                            <Circle icon={<Facebook />} />
+                        </View>
+                        <View style={styles.other_wrapper}>
+                            <View style={styles.line_other}></View>
+                            <Text style={styles.text_other}>OR</Text>
+                            <View style={styles.line_other}></View>
+                        </View>
+                        <View style={styles.sign_in}>
+                            <TouchableOpacity style={styles.change_page_sign}
+                                onPress={() => navigation.navigate('Sign Up', {auth: "Sign Up"})}
+                            >
+                                <Text style={styles.sign_in_text}>
+                                    {t('sign_up_login1')}
+                                    <Text style={styles.sign_in_text_important}>{t('sign_up_login2')}</Text>
+                                    {t('sign_up_login3')}
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </SafeAreaView>
+                </View>
+                <Language />
+            </ScrollView>
         </SafeAreaView>
     )
 }
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        width: '100%',
+        backgroundColor: colors.background,
+    },
+    sign_up: {
+        marginTop: 15,
+        display: 'flex',
+        flexDirection: 'column',
+        marginBottom: 25
+    },
+    scrollContainer: {
+        flexGrow: 1, // This allows the ScrollView to expand as needed
+        paddingBottom: 15,
+        paddingTop: 15,
+        paddingLeft: 25,
+        paddingRight: 25,
+        width: '100%',
+    },
     text: {
         fontSize: 24,
         color: colors.text,
@@ -213,20 +247,9 @@ const styles = StyleSheet.create({
         padding: 0,
         textAlign: 'center'
     },
-    error_input: {
-        marginBottom: 15,
-        marginLeft: 5
-    },
-    error_input_text: {
-        fontSize: 14,
-        fontFamily: fonts.bodyText.fontFamily,
-        fontWeight: fonts.bodyText.fontWeight,
-        color: colors.error,
-        marginLeft: 5,
-    },
-    error_style: {
+    input_box: {
         display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center'
-    }
+        flexDirection: 'column',
+        marginBottom: 25
+    },
 })
