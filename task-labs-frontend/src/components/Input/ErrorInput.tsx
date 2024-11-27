@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React, { useEffect } from 'react'
+import React from 'react'
 import ErrorSVG from '../../config/SVG/Error/ErrorSVG';
 import colors from '../../config/colors';
 import { fonts } from '../../config/fonts/fonts';

@@ -1,5 +1,5 @@
 import { FlatList, Modal, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import React from 'react'
 import { Language } from './Language';
 import { useTranslation } from 'react-i18next';
 import { fonts } from '../../config/fonts/fonts';

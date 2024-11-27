@@ -1,5 +1,5 @@
-import { SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { fonts } from '../../config/fonts/fonts';
 import colors from '../../config/colors';
@@ -11,14 +11,11 @@ import Facebook from '../../config/SVG/SignUp/Facebook';
 import Circle from '../../components/Circle/Circle';
 import Input from '../../components/Input/Input';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { RootStackParamList } from '../../App';
-import Error from '../../components/Notifications/Error';
-import { UserModel } from '../../components/Models/API/User';
-import ErrorSVG from '../../config/SVG/Error/ErrorSVG';
 import { useAuth } from '../../context/AuthContext';
 import ErrorInput from '../../components/Input/ErrorInput';
 import Language from '../../components/Language/Language';
 import Logo from '../../components/Logo/Logo';
+import { RootStackParamList } from '../../App';
 
 type ResultMsgError = {
     error: boolean;
@@ -28,17 +25,14 @@ type ResultMsgError = {
     }
 }
 
-export type SignUpProps = {
-    auth: "Sign Up";
-}
-
 interface Errors {
     [key: string]: string;  // Allows any string key, with string values
 }
 
-export default function SignUp(props: SignUpProps) {
+export default function SignUp() {
 
     const { t } = useTranslation();
+    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
     const { onRegister } = useAuth();
 
@@ -48,8 +42,6 @@ export default function SignUp(props: SignUpProps) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [password2, setPassword2] = useState("");
-
-    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
     const createAccount = async () => {
         const result: ResultMsgError = await onRegister!(email, name, password, password2);
@@ -65,6 +57,7 @@ export default function SignUp(props: SignUpProps) {
                 });
             }else{
                 setErrors("");
+                navigation.navigate('Sign In');
             }
         }
     };
@@ -121,7 +114,7 @@ export default function SignUp(props: SignUpProps) {
                         </View>
                         <View style={styles.sign_in}>
                             <TouchableOpacity style={styles.change_page_sign}
-                                onPress={() => navigation.navigate('Sign Up', {auth: "Sign Up"})}
+                                onPress={() => navigation.navigate('Sign In')}
                             >
                                 <Text style={styles.sign_in_text}>
                                     {t('sign_up_login1')}

@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native'
+import { SafeAreaView, StyleSheet, Text } from 'react-native'
 import React from 'react'
 import colors from '../../../config/colors';
 import { useTranslation } from 'react-i18next';

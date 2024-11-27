@@ -1,22 +1,22 @@
 import { Button, ScrollView, StatusBar } from 'react-native';
 import { useState } from 'react';
-import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView, StyleSheet } from 'react-native';
 import colors from './config/colors';
 import OnBoarding from './pages/OnBoarding/OnBoarding';
 import { I18nextProvider } from 'react-i18next';
 import i18n from './i18n';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { OnBoardingModel } from './components/Models/Navigation/OnBoarding';
-import { AuthModel } from './components/Models/Navigation/Auth';
-import { AuthProvider, useAuth } from './context/AuthContext';
+import { useAuth } from './context/AuthContext';
 import SignUp from './pages/Authentication/SignUp';
+import SignIn from './pages/Authentication/SignIn';
+import ForgotPassword from './pages/Authentication/ForgotPassword';
 
 export type RootStackParamList = {
-    'On Boarding': OnBoardingModel;
-    'Sign Up': AuthModel;
-    'Sign In': AuthModel;
-    'Forgot Password': AuthModel;
+    'On Boarding': any;
+    'Sign Up': any;
+    'Sign In': any;
+    'Forgot Password': any;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -37,37 +37,32 @@ export default function App() {
                         />
                         <ScrollView contentContainerStyle={styles.scrollContainer}>
                             <Stack.Navigator>
-                                {authState?.authenticated ? (
-                                    <Stack.Screen 
-                                        name='On Boarding' 
-                                        children={() => (
-                                            <OnBoarding 
-                                                setIsOnBoardingCompleted={setIsOnBoardingCompleted}
-                                            />
-                                        )}
-                                        options={{ headerShown: false }} 
-                                    />
-                                ) : (
-                                    isOnBoardingCompleted ? (
-                                        <Stack.Screen
-                                            name='Sign Up'
-                                            children={() => (
-                                                <SignUp auth={"Sign Up"} />
-                                            )}
-                                            options={{ headerShown: false }}
-                                        />  
-                                    ) : (
-                                        <Stack.Screen 
-                                            name='On Boarding' 
-                                            children={() => (
-                                                <OnBoarding 
-                                                    setIsOnBoardingCompleted={setIsOnBoardingCompleted}
-                                                />
-                                            )}
-                                            options={{ headerShown: false }} 
-                                        />                                    
-                                    )
-                                )}
+                                <Stack.Screen 
+                                    name='On Boarding'
+                                    children={() => (
+                                        <OnBoarding 
+                                            setIsOnBoardingCompleted={setIsOnBoardingCompleted}
+                                        />
+                                    )}
+                                    options={{ headerShown: false }}
+                                />
+                                <Stack.Screen 
+                                    name='Sign Up'
+                                    children={() => (
+                                        <SignUp />
+                                    )}
+                                    options={{ headerShown: false }}
+                                />
+                                <Stack.Screen 
+                                    name='Sign In'
+                                    component={SignIn}
+                                    options={{ headerShown: false }}
+                                />
+                                <Stack.Screen 
+                                    name='Forgot Password'
+                                    component={ForgotPassword}
+                                    options={{ headerShown: false }}
+                                />
                             </Stack.Navigator>
                         </ScrollView>
                     </SafeAreaView>

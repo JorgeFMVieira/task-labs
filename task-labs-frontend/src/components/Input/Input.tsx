@@ -26,7 +26,7 @@ export default function Input(props: InputProps) {
 
     const navigateWarning = () => {
         if(props.warningNavigate === 'Forgot Password'){
-            navigation.navigate('Forgot Password', { auth: 'Forgot Password'});
+            navigation.navigate('Forgot Password');
         }
     }
 

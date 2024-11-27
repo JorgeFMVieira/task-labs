@@ -1,75 +1,97 @@
-import { SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { fonts } from '../../config/fonts/fonts';
 import colors from '../../config/colors';
-import Name from '../../config/SVG/SignUp/Name';
 import Email from '../../config/SVG/SignUp/Email';
-import Password from '../../config/SVG/SignUp/Password';
-import Google from '../../config/SVG/SignUp/Google';
-import Facebook from '../../config/SVG/SignUp/Facebook';
 import Input from '../../components/Input/Input';
-import Circle from '../../components/Circle/Circle';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../App';
+import Logo from '../../components/Logo/Logo';
+import ErrorInput from '../../components/Input/ErrorInput';
 
 export default function ForgotPassword() {
 
     const { t } = useTranslation();
 
-    const [email, setEmail] = useState("");
-
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
+    const [errors, setErrors] = useState({});  // Use an empty object to hold dynamic errors 
+    const [email, setEmail] = useState("");
 
     const submitFogotPassword = () => {
         console.log("forgot password")
     };
 
-    const navigateLogin = () => {
-        navigation.navigate('Auth', {auth: "Sign In"});
-    }
-
     return (
-        <SafeAreaView>
-            <Text style={styles.text}>
-                <Text>
-                    {t('forgot_password_title1')}
-                </Text>
-                <Text style={styles.textImportant}>
-                    {t('forgot_password_title2')}
-                </Text>
-            </Text>
-            <View style={styles.inputs_wrapper}>
-                <Input placeholder={t('sign_in_email')} keyboardType={'email-address'} value={email} setValue={setEmail} icon={<Email />} secureTextEntry={false} hasWarning={''} warningNavigate='' />
-            </View>
-            <TouchableOpacity 
-                style={styles.create_btn} 
-                onPress={() => submitFogotPassword()}
-            >
-                <Text style={styles.create_btn_text}>{t('forgot_password_submit')}</Text>
-            </TouchableOpacity>
-            <View style={styles.other_wrapper}>
-                <View style={styles.line_other}></View>
-                <Text style={styles.text_other}>OR</Text>
-                <View style={styles.line_other}></View>
-            </View>
-            <View style={styles.sign_in}>
-                <TouchableOpacity style={styles.change_page_sign}
-                    onPress={navigateLogin}
-                >
-                    <Text style={styles.sign_in_text}>
-                        {t('forgot_password_login1')}
-                        <Text style={styles.sign_in_text_important}>{t('forgot_password_login2')}</Text>
-                        {t('forgot_password_login3')}
-                    </Text>
-                </TouchableOpacity>
-            </View>
+        <SafeAreaView style={styles.container}>
+            <ScrollView style={styles.scrollContainer}>
+                <Logo />
+                <View style={styles.sign_up}>
+                    <SafeAreaView>
+                        <Text style={styles.text}>
+                            <Text>
+                                {t('forgot_password_title1')}
+                            </Text>
+                            <Text style={styles.textImportant}>
+                                {t('forgot_password_title2')}
+                            </Text>
+                        </Text>
+                        <View style={styles.inputs_wrapper}>
+                            <View style={styles.input_box}>
+                                <Input field='email' setErrors={setErrors} errors={errors} placeholder={t('sign_up_email')} keyboardType={'email-address'} value={email} setValue={setEmail} icon={<Email />} secureTextEntry={false} hasWarning={''} warningNavigate='' />
+                                <ErrorInput field='email' errors={errors}/>
+                            </View>
+                        </View>
+                        <TouchableOpacity 
+                            style={styles.create_btn} 
+                            onPress={() => submitFogotPassword()}
+                        >
+                            <Text style={styles.create_btn_text}>{t('forgot_password_submit')}</Text>
+                        </TouchableOpacity>
+                        <View style={styles.other_wrapper}>
+                            <View style={styles.line_other}></View>
+                            <Text style={styles.text_other}>OR</Text>
+                            <View style={styles.line_other}></View>
+                        </View>
+                        <View style={styles.sign_in}>
+                            <TouchableOpacity style={styles.change_page_sign}
+                                onPress={() => navigation.navigate('Sign In')}
+                            >
+                                <Text style={styles.sign_in_text}>
+                                    {t('forgot_password_login1')}
+                                    <Text style={styles.sign_in_text_important}>{t('forgot_password_login2')}</Text>
+                                    {t('forgot_password_login3')}
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                    </SafeAreaView>
+                </View>
+            </ScrollView>
         </SafeAreaView>
     )
 }
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        width: '100%',
+        backgroundColor: colors.background,
+    },
+    sign_up: {
+        marginTop: 15,
+        display: 'flex',
+        flexDirection: 'column',
+        marginBottom: 25
+    },
+    scrollContainer: {
+        flexGrow: 1, // This allows the ScrollView to expand as needed
+        paddingBottom: 15,
+        paddingTop: 15,
+        paddingLeft: 25,
+        paddingRight: 25,
+        width: '100%',
+    },
     text: {
         fontSize: 24,
         color: colors.text,
@@ -158,5 +180,10 @@ const styles = StyleSheet.create({
         margin: 0,
         padding: 0,
         textAlign: 'center'
+    },
+    input_box: {
+        display: 'flex',
+        flexDirection: 'column',
+        marginBottom: 25
     }
 })

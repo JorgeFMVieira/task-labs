@@ -1,4 +1,4 @@
-import { Button, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import colors from '../../config/colors';
 import Bar from './Bar/Bar';
@@ -7,7 +7,6 @@ import { useTranslation } from 'react-i18next';
 import { fonts } from '../../config/fonts/fonts';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../../App';
-
 export type ProgressBarProps = {
     currentPage: number;
     setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
@@ -16,7 +15,7 @@ export type ProgressBarProps = {
 }
 
 export default function ProgressBar(props: ProgressBarProps) {
-    const navigation = useNavigation<NavigationProp<RootStackParamList>>(); // Type your navigation prop
+    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
     const { t } = useTranslation();
 
@@ -27,7 +26,7 @@ export default function ProgressBar(props: ProgressBarProps) {
 
         if (props.currentPage === props.maxPages) {
             // Correct way to navigate and pass params
-            props.setIsOnBoardingCompleted(true);
+            navigation.navigate('Sign Up');
         }
     };
 
