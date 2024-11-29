@@ -1,0 +1,33 @@
+ EMPRESA
+
+GERAL
+ - Criar empresa
+ - Editar
+ - Eliminar
+
+
+FUNCIONARIOS
+ - Adicionar Funcionarios (podem ter uma empresa adicionada ja)
+ - Remover Funcionarios
+ - Adicionar Cargos aos funcionarios
+
+ - Criar cargos empresa
+ - Editar cargos empresa
+ - Eliminar cargos empresa
+
+
+
+FUNÇÕES EMPRESA
+ - Marcar ponto
+ - Gestão de Funcionarios (listar todos)
+ - Gestão de Cargos (listar todos)
+ - Gestão Veículos Empresa
+ - Gestão de Projetos (Obras) (rever, tem que ser funcionalidades simples, visto que é mobile)
+
+
+
+
+----------------------------------------------------
+
+HOME PAGE
+ 

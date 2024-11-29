@@ -14,6 +14,19 @@ import { useAuth } from '../../context/AuthContext';
 import { RootStackParamList } from '../../App';
 import Logo from '../../components/Logo/Logo';
 import ErrorInput from '../../components/Input/ErrorInput';
+import Language from '../../components/Language/Language';
+
+type ResultMsgError = {
+    error: boolean;
+    msg: {
+        key: string;
+        value: string;
+    }
+}
+
+interface Errors {
+    [key: string]: string;  // Allows any string key, with string values
+}
 
 export default function SignIn() {
 
@@ -24,21 +37,33 @@ export default function SignIn() {
     const { onLogin } = useAuth();
 
     const [errors, setErrors] = useState({});  // Use an empty object to hold dynamic errors
-    const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [password2, setPassword2] = useState("");
 
     const loginIntoAccount = async () => {
-        const result = await onLogin!(email, password);
-        if(result && result.error){
-            alert(result.msg);
+        const result: ResultMsgError = await onLogin!(email, password);
+        if (result) {
+            console.log(result)
+            if(result.error){
+                setErrors((prevErrors) => {
+                    const newErrors: Errors = { ...prevErrors };  // Make a copy of the previous errors
+                    Object.entries(result.msg).forEach(([key, value]) => {
+                        newErrors[key] = value;  // Update or add the error message for each field
+                    });
+                    return newErrors;  // Return the updated errors object
+                });
+            }else{
+                setErrors("");
+                navigation.navigate('Home');
+            }
         }
     };
+
 
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView style={styles.scrollContainer}>
+                <Language />
                 <Logo />
                 <View style={styles.sign_up}>
                     <SafeAreaView>
@@ -58,6 +83,9 @@ export default function SignIn() {
                             <View style={styles.input_box}>
                                 <Input field='password' setErrors={setErrors} errors={errors} placeholder={t('sign_in_password1')} keyboardType={'default'} value={password} setValue={setPassword} icon={<Password />} secureTextEntry={true} hasWarning={'Forgot your password?'} warningNavigate='Forgot Password' />
                                 <ErrorInput field='password' errors={errors} />
+                            </View>
+                            <View style={styles.input_box}>
+                                <ErrorInput field='detail' errors={errors} />
                             </View>
                         </View>
                         <TouchableOpacity 

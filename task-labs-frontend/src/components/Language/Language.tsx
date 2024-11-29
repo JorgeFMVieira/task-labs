@@ -4,6 +4,7 @@ import ModalLanguage from './ModalLanguage';
 import { fonts } from '../../config/fonts/fonts';
 import colors from '../../config/colors';
 import ArrowUpSVG from '../../config/SVG/Language/ArrowUpSVG';
+import ArrowSVG from '../../config/SVG/Language/ArrowSVG';
 
 export type Language = {
     name: string;
@@ -22,7 +23,7 @@ export default function Language() {
                 onPress={() => setModalVisible(true)}
             >
                 <Text style={styles.text}>{currentLanguage}</Text>
-                <ArrowUpSVG style={styles.arrow} />
+                <ArrowSVG style={styles.arrow} />
             </TouchableOpacity>
             <ModalLanguage isModalVisible={isModalVisible} setModalVisible={setModalVisible} currentLanguage={currentLanguage} setCurrentLanguage={setCurrentLanguage} />
         </SafeAreaView>
@@ -35,7 +36,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: 35,
     },
     container: {
         flexDirection: 'row',

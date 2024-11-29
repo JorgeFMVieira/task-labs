@@ -50,5 +50,8 @@
     "password_maxlength": "Password cannot exceed 255 characters.",
     "email_invalid": "Email format is invalid.",
     "contact_admin": "An error occurred. Please try again later and contact an admin.",
-    "email_exists": "That email adress is already in use."
+    "email_exists": "That email adress is already in use.",
+    "home_title1": "Your ",
+    "home_title2": "Professional ",
+    "home_title3": "Network"
 }

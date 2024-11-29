@@ -66,11 +66,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         try {
             const result = await axios.post(`${API_URL}/token/`, { email, password });
 
-            console.log("login result: ", result);
+            // console.log("login result: ", result);
 
             // Update the authState with the token
             setAuthState({
-                token: result.data.token,
+                token: result.data.access,
                 authenticated: true,
             });
 
@@ -78,11 +78,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             axios.defaults.headers.common['Authorization'] = `Bearer ${result.data.token}`;
 
             // Store the token in secure storage
-            await SecureStore.setItemAsync(TOKEN_KEY, result.data.token);
+            console.log(result.data);
+            await SecureStore.setItemAsync(TOKEN_KEY, result.data.access);
 
             return result; // Return the login response or success message
         } catch (e) {
-            return { error: true, msg: (e as any)?.response?.data?.msg || 'Unknown error' };
+            // return { error: true, msg: (e as any)?.response?.data?.msg || 'Unknown error' };
+            return { error: true, msg: (e as any).response.data || 'Unknown error' };
         }
     };
 

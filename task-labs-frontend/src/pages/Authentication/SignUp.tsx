@@ -36,7 +36,6 @@ export default function SignUp() {
 
     const { onRegister } = useAuth();
 
-    const [responseMessage, setResponseMessage] = useState("");
     const [errors, setErrors] = useState({});  // Use an empty object to hold dynamic errors
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
@@ -65,6 +64,7 @@ export default function SignUp() {
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView style={styles.scrollContainer}>
+                <Language />
                 <Logo />
                 <View style={styles.sign_up}>
                     <SafeAreaView>
@@ -125,7 +125,6 @@ export default function SignUp() {
                         </View>
                     </SafeAreaView>
                 </View>
-                <Language />
             </ScrollView>
         </SafeAreaView>
     )

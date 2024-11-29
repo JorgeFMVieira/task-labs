@@ -17,11 +17,11 @@ export default function OnBoarding(props: OnBoardingProps) {
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView style={styles.scrollContainer}>
+                <Language />
                 <Logo />
                 <View style={{ marginBottom: 25}}>
                     <SVGImage currentPage={currentPage} setCurrentPage={setCurrentPage} maxPages={maxPages} setIsOnBoardingCompleted={props.setIsOnBoardingCompleted} />
                 </View>
-                <Language />
             </ScrollView>
         </SafeAreaView>
     );

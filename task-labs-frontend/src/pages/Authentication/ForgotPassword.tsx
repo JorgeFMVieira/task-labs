@@ -9,6 +9,7 @@ import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../App';
 import Logo from '../../components/Logo/Logo';
 import ErrorInput from '../../components/Input/ErrorInput';
+import Language from '../../components/Language/Language';
 
 export default function ForgotPassword() {
 
@@ -26,6 +27,7 @@ export default function ForgotPassword() {
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView style={styles.scrollContainer}>
+                <Language />
                 <Logo />
                 <View style={styles.sign_up}>
                     <SafeAreaView>

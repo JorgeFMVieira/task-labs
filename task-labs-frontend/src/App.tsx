@@ -11,12 +11,15 @@ import { useAuth } from './context/AuthContext';
 import SignUp from './pages/Authentication/SignUp';
 import SignIn from './pages/Authentication/SignIn';
 import ForgotPassword from './pages/Authentication/ForgotPassword';
+import Home from './pages/Home/Home';
+import Navbar from './components/Navbar/Navbar';
 
 export type RootStackParamList = {
     'On Boarding': any;
     'Sign Up': any;
     'Sign In': any;
     'Forgot Password': any;
+    'Home': any;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -37,7 +40,14 @@ export default function App() {
                         />
                         <ScrollView contentContainerStyle={styles.scrollContainer}>
                             <Stack.Navigator>
-                                <Stack.Screen 
+                                {authState.authenticated === true ? (
+                                    <Stack.Screen 
+                                    name='Home'
+                                    component={Home}
+                                    options={{ headerShown: false }}
+                                />
+                                ) : (
+                                    <Stack.Screen 
                                     name='On Boarding'
                                     children={() => (
                                         <OnBoarding 
@@ -46,6 +56,7 @@ export default function App() {
                                     )}
                                     options={{ headerShown: false }}
                                 />
+                                )}
                                 <Stack.Screen 
                                     name='Sign Up'
                                     children={() => (
@@ -65,6 +76,7 @@ export default function App() {
                                 />
                             </Stack.Navigator>
                         </ScrollView>
+                        <Navbar />
                     </SafeAreaView>
             </I18nextProvider>
         </NavigationContainer>
