@@ -1,5 +1,5 @@
 import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { fonts } from '../../config/fonts/fonts';
 import colors from '../../config/colors';
@@ -28,7 +28,12 @@ interface Errors {
     [key: string]: string;  // Allows any string key, with string values
 }
 
-export default function SignIn() {
+export type SignInProps = {
+    loadTo: string;
+    setLoadTo: React.Dispatch<React.SetStateAction<string>>;
+}
+
+export default function SignIn(props: SignInProps) {
 
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
@@ -53,12 +58,16 @@ export default function SignIn() {
                     return newErrors;  // Return the updated errors object
                 });
             }else{
+
                 setErrors("");
-                navigation.navigate('Home');
+                props.setLoadTo("Home");
             }
         }
     };
 
+    const changeSignUp = () => {
+        props.setLoadTo("Sign Up");
+    }
 
     return (
         <SafeAreaView style={styles.container}>
@@ -77,11 +86,11 @@ export default function SignIn() {
                         </Text>
                         <View style={styles.inputs_wrapper}>
                             <View style={styles.input_box}>
-                                <Input field='email' setErrors={setErrors} errors={errors} placeholder={t('sign_in_email')} keyboardType={'default'} value={email} setValue={setEmail} icon={<Email />} secureTextEntry={false} hasWarning={''} warningNavigate='' />
+                                <Input field='email' setErrors={setErrors} errors={errors} placeholder={t('sign_in_email')} keyboardType={'default'} value={email} setValue={setEmail} icon={<Email />} secureTextEntry={false} hasWarning={''} warningNavigate='' setLoadTo={props.setLoadTo} />
                                 <ErrorInput field='email' errors={errors} />
                             </View>
                             <View style={styles.input_box}>
-                                <Input field='password' setErrors={setErrors} errors={errors} placeholder={t('sign_in_password1')} keyboardType={'default'} value={password} setValue={setPassword} icon={<Password />} secureTextEntry={true} hasWarning={'Forgot your password?'} warningNavigate='Forgot Password' />
+                                <Input field='password' setErrors={setErrors} errors={errors} placeholder={t('sign_in_password1')} keyboardType={'default'} value={password} setValue={setPassword} icon={<Password />} secureTextEntry={true} hasWarning={'Forgot your password?'} warningNavigate='Forgot Password' setLoadTo={props.setLoadTo} />
                                 <ErrorInput field='password' errors={errors} />
                             </View>
                             <View style={styles.input_box}>
@@ -108,7 +117,7 @@ export default function SignIn() {
                         </View>
                         <View style={styles.sign_in}>
                             <TouchableOpacity style={styles.change_page_sign}
-                                onPress={() => navigation.navigate('Sign Up')}
+                                onPress={() => changeSignUp()}
                             >
                                 <Text style={styles.sign_in_text}>
                                     {t('sign_in_login1')}

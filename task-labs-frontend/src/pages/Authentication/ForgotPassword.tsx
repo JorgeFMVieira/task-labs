@@ -1,5 +1,5 @@
 import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { fonts } from '../../config/fonts/fonts';
 import colors from '../../config/colors';
@@ -11,7 +11,12 @@ import Logo from '../../components/Logo/Logo';
 import ErrorInput from '../../components/Input/ErrorInput';
 import Language from '../../components/Language/Language';
 
-export default function ForgotPassword() {
+export type ForgotPasswordProps = {
+    loadTo: string;
+    setLoadTo: React.Dispatch<React.SetStateAction<string>>;
+}
+
+export default function ForgotPassword(props: ForgotPasswordProps) {
 
     const { t } = useTranslation();
 
@@ -23,6 +28,10 @@ export default function ForgotPassword() {
     const submitFogotPassword = () => {
         console.log("forgot password")
     };
+
+    const changeSignIn = () => {
+        props.setLoadTo("Sign In");
+    }
 
     return (
         <SafeAreaView style={styles.container}>
@@ -41,7 +50,7 @@ export default function ForgotPassword() {
                         </Text>
                         <View style={styles.inputs_wrapper}>
                             <View style={styles.input_box}>
-                                <Input field='email' setErrors={setErrors} errors={errors} placeholder={t('sign_up_email')} keyboardType={'email-address'} value={email} setValue={setEmail} icon={<Email />} secureTextEntry={false} hasWarning={''} warningNavigate='' />
+                                <Input field='email' setErrors={setErrors} errors={errors} placeholder={t('sign_up_email')} keyboardType={'email-address'} value={email} setValue={setEmail} icon={<Email />} secureTextEntry={false} hasWarning={''} warningNavigate='' setLoadTo={props.setLoadTo} />
                                 <ErrorInput field='email' errors={errors}/>
                             </View>
                         </View>
@@ -58,7 +67,7 @@ export default function ForgotPassword() {
                         </View>
                         <View style={styles.sign_in}>
                             <TouchableOpacity style={styles.change_page_sign}
-                                onPress={() => navigation.navigate('Sign In')}
+                                onPress={() => changeSignIn()}
                             >
                                 <Text style={styles.sign_in_text}>
                                     {t('forgot_password_login1')}

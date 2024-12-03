@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { SafeAreaView, Text, StyleSheet, TouchableOpacity, ScrollView, View } from 'react-native';
 import { useAuth } from '../../context/AuthContext';
 import colors from '../../config/colors';
@@ -10,7 +10,10 @@ import Language from '../../components/Language/Language';
 import Logo from '../../components/Logo/Logo';
 import Navbar from '../../components/Navbar/Navbar';
 
-export default function Home() {
+export type HomeProps = {
+}
+
+export default function Home(props: HomeProps) {
 
     const { onLogout } = useAuth();
 
@@ -22,6 +25,9 @@ export default function Home() {
         console.log("logout")
         await onLogout();
     };
+    
+    useEffect(() => {
+      }, []);
 
    return (
         <SafeAreaView style={styles.container}>

@@ -1,6 +1,6 @@
 frontend:
 
-- Adicionar transições a varios itens
+- Adicionar transições a varios itens (fazer o loading screen, ta inifitio)
 
 - Melhor design dos erros
 

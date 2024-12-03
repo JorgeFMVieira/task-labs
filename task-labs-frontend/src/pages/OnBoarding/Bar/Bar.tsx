@@ -15,7 +15,6 @@ export default function Bar(props: BarProps) {
         props.setCurrentPage(props.page)
     }
 
-
     return (
         <SafeAreaView style={[styles.container, { backgroundColor: props.isActive ? colors.main : colors.neutral }]}>
             <TouchableOpacity

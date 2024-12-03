@@ -1,5 +1,5 @@
 import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { fonts } from '../../config/fonts/fonts';
 import colors from '../../config/colors';
@@ -29,12 +29,17 @@ interface Errors {
     [key: string]: string;  // Allows any string key, with string values
 }
 
-export default function SignUp() {
+export type SignUpProps = {
+    loadTo: string;
+    setLoadTo: React.Dispatch<React.SetStateAction<string>>;
+}
+
+export default function SignUp(props: SignUpProps) {
 
     const { t } = useTranslation();
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-    const { onRegister } = useAuth();
+    const { onRegister, authState } = useAuth();
 
     const [errors, setErrors] = useState({});  // Use an empty object to hold dynamic errors
     const [name, setName] = useState("");
@@ -45,7 +50,6 @@ export default function SignUp() {
     const createAccount = async () => {
         const result: ResultMsgError = await onRegister!(email, name, password, password2);
         if (result) {
-            console.log(result)
             if(result.error){
                 setErrors((prevErrors) => {
                     const newErrors: Errors = { ...prevErrors };  // Make a copy of the previous errors
@@ -56,10 +60,14 @@ export default function SignUp() {
                 });
             }else{
                 setErrors("");
-                navigation.navigate('Sign In');
+                props.setLoadTo("Sign In");
             }
         }
     };
+
+    const changeSignIn = () => {
+        props.setLoadTo("Sign In");
+    }
 
     return (
         <SafeAreaView style={styles.container}>
@@ -78,19 +86,19 @@ export default function SignUp() {
                         </Text>
                         <View style={styles.inputs_wrapper}>
                             <View style={styles.input_box}>
-                                <Input field='username' setErrors={setErrors} errors={errors} placeholder={t('sign_up_name')} keyboardType={'default'} value={name} setValue={setName} icon={<Name />} secureTextEntry={false} hasWarning={''} warningNavigate='' />
+                                <Input field='username' setErrors={setErrors} errors={errors} placeholder={t('sign_up_name')} keyboardType={'default'} value={name} setValue={setName} icon={<Name />} secureTextEntry={false} hasWarning={''} warningNavigate='' setLoadTo={props.setLoadTo} />
                                 <ErrorInput field='username' errors={errors} />
                             </View>
                             <View style={styles.input_box}>
-                                <Input field='email' setErrors={setErrors} errors={errors} placeholder={t('sign_up_email')} keyboardType={'email-address'} value={email} setValue={setEmail} icon={<Email />} secureTextEntry={false} hasWarning={''} warningNavigate='' />
+                                <Input field='email' setErrors={setErrors} errors={errors} placeholder={t('sign_up_email')} keyboardType={'email-address'} value={email} setValue={setEmail} icon={<Email />} secureTextEntry={false} hasWarning={''} warningNavigate='' setLoadTo={props.setLoadTo} />
                                 <ErrorInput field='email' errors={errors}/>
                             </View>
                             <View style={styles.input_box}>
-                                <Input field='password' setErrors={setErrors} errors={errors} placeholder={t('sign_up_password1')} keyboardType={'default'} value={password} setValue={setPassword} icon={<Password />} secureTextEntry={true} hasWarning={''} warningNavigate='' />
+                                <Input field='password' setErrors={setErrors} errors={errors} placeholder={t('sign_up_password1')} keyboardType={'default'} value={password} setValue={setPassword} icon={<Password />} secureTextEntry={true} hasWarning={''} warningNavigate='' setLoadTo={props.setLoadTo} />
                                 <ErrorInput field='password' errors={errors} />
                             </View>
                             <View style={styles.input_box}>
-                                <Input field='password2' setErrors={setErrors} errors={errors} placeholder={t('sign_up_password2')} keyboardType={'default'} value={password2} setValue={setPassword2} icon={<Password />} secureTextEntry={true} hasWarning={''} warningNavigate='' />
+                                <Input field='password2' setErrors={setErrors} errors={errors} placeholder={t('sign_up_password2')} keyboardType={'default'} value={password2} setValue={setPassword2} icon={<Password />} secureTextEntry={true} hasWarning={''} warningNavigate='' setLoadTo={props.setLoadTo} />
                                 <ErrorInput field='password2' errors={errors} />
                             </View>
                         </View>
@@ -114,7 +122,7 @@ export default function SignUp() {
                         </View>
                         <View style={styles.sign_in}>
                             <TouchableOpacity style={styles.change_page_sign}
-                                onPress={() => navigation.navigate('Sign In')}
+                                onPress={() => changeSignIn()}
                             >
                                 <Text style={styles.sign_in_text}>
                                     {t('sign_up_login1')}

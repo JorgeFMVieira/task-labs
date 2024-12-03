@@ -1,22 +1,23 @@
-import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect } from 'react';
 import colors from '../../config/colors';
 import Bar from './Bar/Bar';
 import BarText from './Bar/BarText';
 import { useTranslation } from 'react-i18next';
 import { fonts } from '../../config/fonts/fonts';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { createNavigationContainerRef, NavigationProp, useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../../App';
+
 export type ProgressBarProps = {
     currentPage: number;
     setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
     maxPages: number;
-    setIsOnBoardingCompleted: React.Dispatch<React.SetStateAction<boolean>>;
-}
+    loadTo: string;
+    setLoadTo: React.Dispatch<React.SetStateAction<string>>;
+};
 
 export default function ProgressBar(props: ProgressBarProps) {
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-
     const { t } = useTranslation();
 
     const onPagePressNext = () => {
@@ -25,8 +26,8 @@ export default function ProgressBar(props: ProgressBarProps) {
         }
 
         if (props.currentPage === props.maxPages) {
-            // Correct way to navigate and pass params
-            navigation.navigate('Sign Up');
+            props.setLoadTo("Sign Up");
+            console.log("Navigate to Sign Up");
         }
     };
 
@@ -68,7 +69,6 @@ export default function ProgressBar(props: ProgressBarProps) {
     );
 }
 
-
 const styles = StyleSheet.create({
     content: {
         width: '100%',
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         width: '80%',
         justifyContent: 'space-around',
-        cursor: 'pointer'
+        cursor: 'pointer',
     },
     button: {
         width: '100%',
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
         marginTop: 50,
         paddingVertical: 15,
         textAlign: 'center',
-        cursor: 'pointer'
+        cursor: 'pointer',
     },
     text_button: {
         color: colors.secondaryText,
@@ -99,5 +99,5 @@ const styles = StyleSheet.create({
         fontFamily: fonts.bodyText.fontFamily,
         fontWeight: fonts.bodyText.fontWeight,
         fontSize: 16,
-    }
-})
+    },
+});

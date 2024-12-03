@@ -5,8 +5,9 @@ import Logo from '../../components/Logo/Logo';
 import SVGImage from './SVGImage';
 import Language from '../../components/Language/Language';
 
-interface OnBoardingProps {
-    setIsOnBoardingCompleted: React.Dispatch<React.SetStateAction<boolean>>;
+export type OnBoardingProps = {
+    loadTo: string;
+    setLoadTo: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export default function OnBoarding(props: OnBoardingProps) {
@@ -20,7 +21,7 @@ export default function OnBoarding(props: OnBoardingProps) {
                 <Language />
                 <Logo />
                 <View style={{ marginBottom: 25}}>
-                    <SVGImage currentPage={currentPage} setCurrentPage={setCurrentPage} maxPages={maxPages} setIsOnBoardingCompleted={props.setIsOnBoardingCompleted} />
+                    <SVGImage currentPage={currentPage} setCurrentPage={setCurrentPage} maxPages={maxPages} loadTo={props.loadTo} setLoadTo={props.setLoadTo} />
                 </View>
             </ScrollView>
         </SafeAreaView>

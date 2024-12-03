@@ -18,6 +18,7 @@ export type InputProps = {
     errors: { [key: string]: string };  // This means each key (field) in the errors object is a string, and its value is a string (the error message)
     setErrors: React.Dispatch<React.SetStateAction<{}>>;
     field: string;
+    setLoadTo: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export default function Input(props: InputProps) {
@@ -26,7 +27,7 @@ export default function Input(props: InputProps) {
 
     const navigateWarning = () => {
         if(props.warningNavigate === 'Forgot Password'){
-            navigation.navigate('Forgot Password');
+            props.setLoadTo('Forgot Password');
         }
     }
 
